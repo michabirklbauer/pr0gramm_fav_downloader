@@ -45,8 +45,9 @@ def download_collection() -> None:
     first_pack_items = json.loads(first_pack.text)["items"]
     # get first batch
     for item in first_pack_items:
+        id = int(item["id"])
         download_item(item, error_urls)
-        seen_ids.add(int(item["id"]))
+        seen_ids.add(id)
     # log completion of first batch
     print(f"Downloaded {len(seen_ids)} posts.")
     current_ids = set()
@@ -59,9 +60,13 @@ def download_collection() -> None:
         if len(pack_items) == 0:
             break
         for item in pack_items:
+            id = int(item["id"])
+            if id in seen_ids:
+                finished = True
+                break
             download_item(item, error_urls)
-            seen_ids.add(int(item["id"]))
-            current_ids.add(int(item["id"]))
+            seen_ids.add(id)
+            current_ids.add(id)
         current_max = max(current_ids)
         current_ids = set()
         print(f"Downloaded {len(seen_ids)} posts.")
