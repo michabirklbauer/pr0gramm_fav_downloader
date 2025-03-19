@@ -22,6 +22,9 @@ BASE_URL = "https://img.pr0gramm.com/"
 COLLECTION = f"https://pr0gramm.com/api/items/get?flags=31&user={USER}&collection=favoriten&self=false"
 
 
+__version = "1.0.0"
+
+
 def download_item(item: Dict[Any, Any], error_urls: List[str]) -> None:
     id = int(item["id"])
     item_url = str(item["image"]).strip()
