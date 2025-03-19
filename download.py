@@ -53,6 +53,8 @@ def download_collection() -> None:
     current_ids = set()
     current_max = 0
     finished = False
+    # the API only returns a limited number of items, so we need
+    # to repeatedly call the API to fetch all items
     # iterate over all batches, starting with the oldest
     while not finished:
         pack = get(COLLECTION + f"&newer={current_max}", cookies=COOKIES)
