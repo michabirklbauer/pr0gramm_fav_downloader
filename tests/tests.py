@@ -6,6 +6,6 @@
 
 
 def test1():
-    from download import download_item, download_collection
+    from download import download_item, download_collection  # noqa: F401
 
     assert 0 == 0
