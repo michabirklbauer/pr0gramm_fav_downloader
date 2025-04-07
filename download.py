@@ -19,19 +19,21 @@ ITEM_COUNT = 0
 # login cookies for pr0gramm
 COOKIES = {"me": """cookie_value""", "pp": """cookie_value"""}
 BASE_URL = "https://img.pr0gramm.com/"
+FULL_URL = "https://full.pr0gramm.com/"
 COLLECTION = f"https://pr0gramm.com/api/items/get?flags=31&user={USER}&collection=favoriten&self=false"
 
 
-__version = "1.0.0"
+__version = "1.0.1"
 
 
 def download_item(item: Dict[Any, Any], error_urls: List[str]) -> None:
     id = int(item["id"])
     item_url = str(item["image"]).strip()
+    current_url = BASE_URL + item_url
     if item["fullsize"] is not None and str(item["fullsize"]).strip() != "":
         item_url = str(item["fullsize"]).strip()
+        current_url = FULL_URL + item_url
     item_name = f"{id}_{item_url.split('/')[-1]}"
-    current_url = BASE_URL + item_url
     try:
         _ = ur.urlretrieve(current_url, item_name)
     except Exception:
