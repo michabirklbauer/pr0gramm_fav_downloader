@@ -7,6 +7,7 @@
 import json
 from requests import get
 import urllib.request as ur
+import time
 
 from typing import Any
 from typing import Dict
@@ -22,8 +23,13 @@ BASE_URL = "https://img.pr0gramm.com/"
 FULL_URL = "https://full.pr0gramm.com/"
 COLLECTION = f"https://pr0gramm.com/api/items/get?flags=31&user={USER}&collection=favoriten&self=false"
 
+# polite pacing (seconds)
+# delay between each file download
+DOWNLOAD_DELAY = 0.2
+# delay between each API request for the next batch
+REQUEST_DELAY = 0.5
 
-__version = "1.0.1"
+__version = "1.0.2"
 
 
 def download_item(item: Dict[Any, Any], error_urls: List[str]) -> None:
@@ -40,6 +46,9 @@ def download_item(item: Dict[Any, Any], error_urls: List[str]) -> None:
         error_urls.append(current_url)
         current_url = BASE_URL + str(item["image"]).strip()
         _ = ur.urlretrieve(current_url, item_name)
+    # be polite: brief pause after each download attempt
+    if DOWNLOAD_DELAY and DOWNLOAD_DELAY > 0:
+        time.sleep(DOWNLOAD_DELAY)
     return
 
 
@@ -62,6 +71,9 @@ def download_collection() -> None:
     # to repeatedly call the API to fetch all items
     # iterate over all batches, starting with the oldest
     while not finished:
+        # brief pause between successive API requests
+        if REQUEST_DELAY and REQUEST_DELAY > 0:
+            time.sleep(REQUEST_DELAY)
         pack = get(COLLECTION + f"&newer={current_max}", cookies=COOKIES)
         pack_items = json.loads(pack.text)["items"]
         if len(pack_items) == 0:
